@@ -63,7 +63,7 @@ class StringMatchingJudge(Judge[None, list[StringMatch], bool]):
         
         errors = []
         
-        if not self.must_mismatch_all:
+        if self.must_mismatch_all:
             for target in self.must_mismatch_all:
                 if target in text:
                     errors.append(StringMatch(
@@ -71,7 +71,7 @@ class StringMatchingJudge(Judge[None, list[StringMatch], bool]):
                         string = target
                     ))
         
-        if not self.must_match_all:
+        if self.must_match_all:
             for target in self.must_match_all:
                 if target not in text:
                     errors.append(StringMatch(

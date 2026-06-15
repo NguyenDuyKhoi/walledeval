@@ -1,0 +1,134 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+/* Main CSS styling - Light Theme */
+html, body, [data-testid="stAppViewContainer"] {
+    font-family: 'Outfit', sans-serif !important;
+    background-color: #f8fafc;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.05) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(203, 213, 225, 0.2) 0px, transparent 80%);
+    color: #1e293b;
+}
+
+/* Custom cards styling */
+.glass-card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 24px;
+    box-shadow: 0 8px 30px 0 rgba(0, 0, 0, 0.04);
+    margin-bottom: 20px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #1e293b;
+}
+
+.glass-card:hover {
+    border-color: rgba(124, 58, 237, 0.25);
+    box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.08);
+    transform: translateY(-2px);
+}
+
+/* Status Badges */
+.badge-pass {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: #065f46;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge-fail {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #991b1b;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge-warning {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: #92400e;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 600;
+    display: inline-block;
+}
+
+/* Form inputs & areas styling */
+div[data-baseweb="textarea"], div[data-baseweb="input"] {
+    background-color: #ffffff !important;
+    border: 1px solid rgba(0, 0, 0, 0.12) !important;
+    border-radius: 8px !important;
+    color: #1e293b !important;
+}
+
+div[data-baseweb="textarea"]:focus-within, div[data-baseweb="input"]:focus-within {
+    border-color: #7c3aed !important;
+}
+
+/* Header gradient text */
+.gradient-text {
+    background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+}
+
+/* Dashboard metrics */
+.dashboard-stat {
+    text-align: center;
+    padding: 15px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.stat-value {
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Sidebar styling overrides */
+section[data-testid="stSidebar"] {
+    background-color: #f1f5f9 !important;
+    border-right: 1px solid rgba(0, 0, 0, 0.06);
+}
+section[data-testid="stSidebar"] h1 {
+    color: #7c3aed !important;
+}
+section[data-testid="stSidebar"] p {
+    color: #475569 !important;
+}
+
+/* Streamlit Native Tabs Styling Customization */
+button[data-baseweb="tab"] {
+    font-size: 1.05rem !important;
+    font-weight: 500 !important;
+    color: #64748b !important;
+    padding: 10px 16px !important;
+}
+button[data-baseweb="tab"][aria-selected="true"] {
+    color: #7c3aed !important;
+    font-weight: 600 !important;
+    border-bottom-color: #7c3aed !important;
+}
