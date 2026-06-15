@@ -80,15 +80,55 @@ class Gemini(LLM):
             
         messages = transform_to_gemini(messages)
         
+        safety_settings = [
+            {
+                "category": "HARM_CATEGORY_HARASSMENT",
+                "threshold": "BLOCK_NONE",
+            },
+            {
+                "category": "HARM_CATEGORY_HATE_SPEECH",
+                "threshold": "BLOCK_NONE",
+            },
+            {
+                "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                "threshold": "BLOCK_NONE",
+            },
+            {
+                "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                "threshold": "BLOCK_NONE",
+            },
+        ]
+
         message = client.generate_content(
             messages,
             generation_config=genai.types.GenerationConfig(
                 max_output_tokens=max_new_tokens,
                 temperature=temperature
-            )
+            ),
+            safety_settings=safety_settings
         )
         
-        output = message.text
+        try:
+            output = message.text
+        except ValueError:
+            prompt_feedback = getattr(message, 'prompt_feedback', None)
+            if prompt_feedback and hasattr(prompt_feedback, 'block_reason') and prompt_feedback.block_reason:
+                output = f"[Prompt blocked by Gemini Safety Filters: {prompt_feedback.block_reason.name}]"
+            elif message.candidates:
+                candidate = message.candidates[0]
+                finish_reason = getattr(candidate, 'finish_reason', None)
+                reason_name = finish_reason.name if finish_reason else "UNKNOWN"
+                if reason_name == "SAFETY":
+                    output = "[Response blocked by Gemini Safety Filters]"
+                elif hasattr(candidate, 'content') and candidate.content and candidate.content.parts:
+                    try:
+                        output = candidate.content.parts[0].text
+                    except Exception:
+                        output = f"[Response blocked: Finish reason {reason_name}]"
+                else:
+                    output = f"[Response blocked: Finish reason {reason_name}]"
+            else:
+                output = "[Response blocked by safety filters or empty response]"
         return output
 
     def complete(self,
@@ -99,12 +139,52 @@ class Gemini(LLM):
         model=genai.GenerativeModel(model_name=self.name,
                                     system_instruction=self.system_prompt)
         
+        safety_settings = [
+            {
+                "category": "HARM_CATEGORY_HARASSMENT",
+                "threshold": "BLOCK_NONE",
+            },
+            {
+                "category": "HARM_CATEGORY_HATE_SPEECH",
+                "threshold": "BLOCK_NONE",
+            },
+            {
+                "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                "threshold": "BLOCK_NONE",
+            },
+            {
+                "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                "threshold": "BLOCK_NONE",
+            },
+        ]
+
         message = model.generate_content(
             f"Continue writing: {text}",
             generation_config=genai.types.GenerationConfig(
                 max_output_tokens=max_new_tokens,
                 temperature=temperature
-            )
+            ),
+            safety_settings=safety_settings
         )
-        output = message.text
+        try:
+            output = message.text
+        except ValueError:
+            prompt_feedback = getattr(message, 'prompt_feedback', None)
+            if prompt_feedback and hasattr(prompt_feedback, 'block_reason') and prompt_feedback.block_reason:
+                output = f"[Prompt blocked by Gemini Safety Filters: {prompt_feedback.block_reason.name}]"
+            elif message.candidates:
+                candidate = message.candidates[0]
+                finish_reason = getattr(candidate, 'finish_reason', None)
+                reason_name = finish_reason.name if finish_reason else "UNKNOWN"
+                if reason_name == "SAFETY":
+                    output = "[Response blocked by Gemini Safety Filters]"
+                elif hasattr(candidate, 'content') and candidate.content and candidate.content.parts:
+                    try:
+                        output = candidate.content.parts[0].text
+                    except Exception:
+                        output = f"[Response blocked: Finish reason {reason_name}]"
+                else:
+                    output = f"[Response blocked: Finish reason {reason_name}]"
+            else:
+                output = "[Response blocked by safety filters or empty response]"
         return output

@@ -21,13 +21,29 @@ class MCQJudge(Judge[int, MCQOutput, bool]):
     def check(self, response: str, answer: int) -> MCQOutput:
         # response is simply the output from the model
 
-        response = re.sub(r'[^\w]+', '', response)
-        if response.lower().startswith("answer"):
-            response = response[6:].strip()
-        if response.lower().startswith("boxed"):
-            response = response[5:].strip()
+        # 1. Try to find the answer using a regex pattern
+        # Pattern 1: Standalone option (e.g. "B", "(B)", "B.")
+        standalone_match = re.match(r'^\s*\(?([A-Za-z])\)?\s*\.?\s*$', response)
+        if standalone_match:
+            predicted = standalone_match.group(1).upper()
+        else:
+            # Pattern 2: Contextual answer (e.g. "The correct answer is B", "Answer: B", "option B")
+            context_match = re.search(
+                r'(?:correct\s+)?(?:answer|option|choice)\s*(?:is\s+|:\s*|\s+)\s*\(?([A-Za-z])\)?',
+                response,
+                re.IGNORECASE
+            )
+            if context_match:
+                predicted = context_match.group(1).upper()
+            else:
+                # Fallback to original logic
+                cleaned = re.sub(r'[^\w]+', '', response)
+                if cleaned.lower().startswith("answer"):
+                    cleaned = cleaned[6:].strip()
+                if cleaned.lower().startswith("boxed"):
+                    cleaned = cleaned[5:].strip()
+                predicted = cleaned[0].upper() if cleaned else ""
 
-        predicted = response[0].upper()
         if predicted not in self.options:
             return MCQOutput(
                 predicted = self.unknown_answer,
