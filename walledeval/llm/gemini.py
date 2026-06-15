@@ -35,8 +35,9 @@ class Gemini(LLM):
             type
         )
         genai.configure(api_key=api_key)
+        system_instruction = system_prompt if (system_prompt and len(system_prompt.strip()) > 0) else None
         self.client = genai.GenerativeModel(model_name=self.name,
-                                            system_instruction=system_prompt)
+                                            system_instruction=system_instruction)
 
     @classmethod
     def gemini15flash(cls, api_key: str, system_prompt: str = ""):
@@ -71,8 +72,9 @@ class Gemini(LLM):
             messages = messages[1:]
             
             # small work-around since Gemini library doesn't support system prompt at runtime
+            system_instruction = system_prompt if (system_prompt and len(system_prompt.strip()) > 0) else None
             client = genai.GenerativeModel(model_name=self.name,
-                                           system_instruction=system_prompt)
+                                           system_instruction=system_instruction)
         
         else:
             system_prompt = self.system_prompt
@@ -136,8 +138,9 @@ class Gemini(LLM):
                  max_new_tokens: int = 1024,
                  temperature: float = 0.1) -> str:
         
+        system_instruction = self.system_prompt if (self.system_prompt and len(self.system_prompt.strip()) > 0) else None
         model=genai.GenerativeModel(model_name=self.name,
-                                    system_instruction=self.system_prompt)
+                                    system_instruction=system_instruction)
         
         safety_settings = [
             {
