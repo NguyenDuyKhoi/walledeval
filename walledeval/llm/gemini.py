@@ -17,9 +17,9 @@ def transform_to_gemini(messages):
     messages_gemini = []
     for message in messages:
         if message['role'] == 'user':
-            messages_gemini.append({'role': 'user', 'parts': [message['content']]})
+            messages_gemini.append({'role': 'user', 'parts': [{'text': message['content']}]})
         elif message['role'] == 'assistant':
-            messages_gemini.append({'role': 'model', 'parts': [message['content']]})
+            messages_gemini.append({'role': 'model', 'parts': [{'text': message['content']}]})
 
     return messages_gemini
 
